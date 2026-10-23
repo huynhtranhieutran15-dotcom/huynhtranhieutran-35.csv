@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ABC-8 ⚡ VIN Group • mô phỏng 365 ngày</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="blob b1"></div><div class="blob b2"></div>
+
+<nav class="dock">
+  <span class="brand">ABC<em>·8</em> ⚡</span>
+  <a href="#nen">Nến</a><a href="#video">Video</a><a href="#vibe">Chỉ số</a><a href="#thang">Theo tháng</a><a href="#chat">Kết luận</a>
+</nav>
+
+<header class="hero">
+  <div class="ticker"><div class="track">
+    <span>🔥 ĐỈNH {{ '{:,.0f}'.format(info.peak_price) }}</span><span>🧊 ĐÁY {{ '{:,.0f}'.format(info.trough_price) }}</span>
+    <span>📈 {{ '%+.1f'|format(info.year_change_pct) }}% CẢ NĂM</span><span>🧮 TB {{ '{:,.0f}'.format(info.year_mean) }}</span>
+    <span>🎯 TV {{ '{:,.0f}'.format(info.year_median) }}</span><span>💥 BIÊN ĐỘ {{ '{:,.0f}'.format(info.max_amp_value) }}</span>
+    <span>🔥 ĐỈNH {{ '{:,.0f}'.format(info.peak_price) }}</span><span>🧊 ĐÁY {{ '{:,.0f}'.format(info.trough_price) }}</span>
+    <span>📈 {{ '%+.1f'|format(info.year_change_pct) }}% CẢ NĂM</span><span>🧮 TB {{ '{:,.0f}'.format(info.year_mean) }}</span>
+    <span>🎯 TV {{ '{:,.0f}'.format(info.year_median) }}</span><span>💥 BIÊN ĐỘ {{ '{:,.0f}'.format(info.max_amp_value) }}</span>
+  </div></div>
+
+  <p class="chip">✨ cổ phiếu giả định · VIN Group · 365 ngày × 7 phiên</p>
+  <h1 class="glow">ABC-8</h1>
+  <p class="lead">Cả năm tăng <b>{{ '%+.1f'|format(info.year_change_pct) }}%</b>, nhưng đường đi thì nhấp nhô dữ lắm. Xem nó nhảy thế nào 👀</p>
+  <div class="cta">
+    <a class="btn" href="#video">▶ Xem video 1:30</a>
+    <a class="btn ghost" href="#nen">Xem nến 🕯️</a>
+  </div>
+</header>
+
+<main>
+  <section class="card nen" id="nen">
+    <div class="head"><h2>🕯️ Nến nói lên tất cả</h2><span class="tag">mỗi nến = 3 ngày</span></div>
+    <div class="legend">
+      <span class="lg up">Tăng (trên tham chiếu)</span>
+      <span class="lg down">Giảm (dưới tham chiếu)</span>
+      <span class="lg floor">Sàn</span>
+      <span class="lg ceil">Trần</span>
+    </div>
+    <img class="candles" src="data:image/png;base64,{{ candle_img }}" alt="Biểu đồ nến ABC-8 cả năm">
+  </section>
+
+  <section class="card vid" id="video">
+    <div class="head"><h2>🎬 Video mô phỏng</h2><span class="tag">1 phút 30 giây</span></div>
+    {% if render_error %}<p class="err">Lỗi khi xuất video: {{ render_error }}</p>{% endif %}
+    {% if has_video %}
+      {% if is_gif %}
+        <img src="/video" alt="Video mô phỏng">
+      {% else %}
+        <video controls loop playsinline src="/video"></video>
+      {% endif %}
+    {% elif rendering %}
+      <p class="soft">⏳ Đang render… đợi vài phút rồi tải lại trang nha.</p>
+    {% else %}
+      <form method="post" action="/render"><button class="btn">🎬 Xuất video</button></form>
+    {% endif %}
+  </section>
+
+  <section id="vibe">
+    <div class="head"><h2>🧠 Chỉ số vibe</h2><span class="tag">cả năm · 365 ngày</span></div>
+    <div class="bento">
+      <div class="stat big cyan"><span>Trung bình</span><b>{{ '{:,.0f}'.format(info.year_mean) }}</b><small>VND · cộng hết rồi chia</small></div>
+      <div class="stat big pink"><span>Trung vị</span><b>{{ '{:,.0f}'.format(info.year_median) }}</b><small>VND · điểm ở giữa</small></div>
+      <div class="stat"><span>Xu hướng</span><b class="{{ 'up' if info.trend == 'TĂNG' else 'down' }}">{{ info.trend }} {{ '🚀' if info.trend == 'TĂNG' else '📉' }}</b></div>
+      <div class="stat"><span>Tăng cả năm</span><b class="{{ 'up' if info.year_change_pct >= 0 else 'down' }}">{{ '%+.1f'|format(info.year_change_pct) }}%</b></div>
+      <div class="stat"><span>Đỉnh</span><b>{{ '{:,.0f}'.format(info.peak_price) }}</b><small>{{ info.peak_date.strftime('%d/%m') }}</small></div>
+      <div class="stat"><span>Đáy</span><b>{{ '{:,.0f}'.format(info.trough_price) }}</b><small>{{ info.trough_date.strftime('%d/%m') }}</small></div>
+      <div class="stat wide"><span>Biên độ 1 ngày lớn nhất</span><b>{{ '{:,.0f}'.format(info.max_amp_value) }}</b><small>ngày {{ info.max_amp_day.strftime('%d/%m/%Y') }} 💥</small></div>
+      <div class="stat"><span>Ngày bất thường</span><b>{{ n_anom }}</b><small>trên 365 ngày</small></div>
+    </div>
+
+    <div class="card scale">
+      <h3>Trung bình hay trung vị gần đỉnh hơn? 🤔</h3>
+      <div class="track-line">
+        <div class="mk mk-mean" style="left: {{ '%.2f'|format(info.pos_mean) }}%"><span>TB</span><i></i></div>
+        <div class="mk mk-med" style="left: {{ '%.2f'|format(info.pos_median) }}%"><i></i><span>TV</span></div>
+      </div>
+      <div class="ends"><span>{{ '{:,.0f}'.format(info.range_lo) }}</span><span>{{ '{:,.0f}'.format(info.range_hi) }}</span></div>
+      <p class="soft">
+        {% if info.year_mean > info.year_median %}
+          Trung bình cao hơn trung vị: vài ngày giá cao đã kéo trung bình lên.
+        {% else %}
+          Trung bình thấp hơn trung vị: vài ngày giá thấp đã kéo trung bình xuống.
+        {% endif %}
+      </p>
+    </div>
+  </section>
+
+  <section class="card" id="thang">
+    <div class="head"><h2>📅 Từng tháng đang làm gì</h2><span class="tag">cột càng cao = TB càng lớn</span></div>
+    <div class="bars">
+      {% for h in heat %}
+      <div class="col">
+        <div class="bar-wrap">
+          <div class="bar" style="height: {{ '%.1f'|format(h.pct) }}%"></div>
+          <div class="dot" style="bottom: {{ '%.1f'|format(h.med_pct) }}%" title="TV {{ '{:,.0f}'.format(h.median) }}"></div>
+        </div>
+        <b>{{ h.label }}</b>
+        <small>{{ '{:,.1f}'.format(h.mean / 1000) }}k</small>
+      </div>
+      {% endfor %}
+    </div>
+    <p class="soft">Chấm trắng = trung vị của tháng đó.</p>
+  </section>
+
+  <section class="grid">
+    {% for title, img in figs.items() %}
+    <div class="card glass"><h3>{{ title }}</h3><img src="data:image/png;base64,{{ img }}" alt="{{ title }}"></div>
+    {% endfor %}
+  </section>
+
+  <section class="card">
+    <details><summary>📊 Bảng theo tháng</summary><div class="scroll">{{ monthly|safe }}</div></details>
+    <details><summary>📊 Bảng theo quý</summary><div class="scroll">{{ quarterly|safe }}</div></details>
+    <details><summary>⚠️ Ngày bất thường ({{ n_anom }})</summary><div class="scroll tall">{{ anom|safe }}</div></details>
+  </section>
+
+  <section class="card chat" id="chat">
+    <div class="head"><h2>💬 Kết luận (chat với số liệu)</h2></div>
+    {% set icons = ['📈', '🧮', '📅', '🧊', '⚠️', '🔥', '💥', '🤔'] %}
+    {% for line in info.conclusions %}
+      <div class="bubble {{ 'r' if loop.index is even else 'l' }}">
+        <span class="av">{{ icons[loop.index0] }}</span>
+        <p>{{ line }}</p>
+      </div>
+    {% endfor %}
+  </section>
+
+  <section class="card upload">
+    <h3>📂 Thử file khác?</h3>
+    <form method="post" action="/upload" enctype="multipart/form-data">
+      <input type="file" name="file" accept=".csv" required>
+      <button class="btn">Nạp abc-i.csv</button>
+    </form>
+  </section>
+</main>
+
+<footer>made with pandas 🐼 · matplotlib 🎨 · fastapi ⚡ — 2025</footer>
+</body>
+</html>
